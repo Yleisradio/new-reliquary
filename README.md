@@ -7,7 +7,7 @@ Clojure wrapper for New Relic
 
 Add this to your Leiningen project.clj :dependencies:
 
-    [new-reliquary "0.1.0"]
+    [new-reliquary "0.1.1"]
 
 Jar is available in Clojars.
 
