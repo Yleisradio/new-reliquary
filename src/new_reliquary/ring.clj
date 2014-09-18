@@ -1,7 +1,7 @@
 (ns new-reliquary.ring
   (:require [new-reliquary.core :refer [with-newrelic-transaction]]))
 
-(defn wrap-newrelic-transaction [category handler]
+(defn wrap-newrelic-transaction [handler category]
   "Middleware to start newrelic transaction.
 
   If you want to add query parameters as new relic custom params, make sure that request contains hash map :query-params (not in the default ring setup).

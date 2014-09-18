@@ -15,7 +15,7 @@
 (def add-custom-parameter-calls (atom []))
 
 (defn final-handler [request] {:body request})
-(def app (wrap-params (wrap-newrelic-transaction category final-handler)))
+(def app (wrap-params (wrap-newrelic-transaction final-handler category)))
 
 (use-fixtures :each (fn [test]
                       (with-redefs [new-reliquary.core/set-transaction-name (fn [category name] (swap! set-transaction-name-calls conj [category name]))
@@ -57,7 +57,7 @@
 
 (deftest without-query-params-hash-map-in-request
   (testing "tracks request without custom parameters"
-    ((wrap-newrelic-transaction category final-handler) (request :get "http://test.fi/dogs"))
+    ((wrap-newrelic-transaction final-handler category) (request :get "http://test.fi/dogs"))
     (is (= @add-custom-parameter-calls []))
     (is (= @set-transaction-name-calls [[category "/dogs"]]))))
 

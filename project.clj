@@ -1,4 +1,4 @@
-(defproject new-reliquary "0.1.0"
+(defproject new-reliquary "0.1.1"
   :description "Clojure newrelic java api wrapper"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
