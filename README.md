@@ -2,6 +2,10 @@
 
 Clojure wrapper for New Relic
 
+
+[![Build Status](https://travis-ci.org/Yleisradio/new-reliquary.svg)](https://travis-ci.org/Yleisradio/new-reliquary)
+[![Dependencies Status](http://jarkeeper.com/Yleisradio/new-reliquary/status.png)](http://jarkeeper.com/Yleisradio/new-reliquary)
+
 ------------------------------------
 ### Installation
 
