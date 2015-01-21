@@ -1,6 +1,6 @@
 (defproject new-reliquary "0.1.3"
   :description "Clojure newrelic java api wrapper"
-  :url "https://github.com/juhakaremo/new-reliquary"
+  :url "https://github.com/Yleisradio/new-reliquary"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
