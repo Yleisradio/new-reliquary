@@ -10,7 +10,7 @@
 (defn add-custom-parameter [key val]
   (NewRelic/addCustomParameter key val))
 
-(defn ingore-transaction []
+(defn ignore-transaction []
   (NewRelic/ignoreTransaction))
 
 (deftype NewRelicTracer []
@@ -37,7 +37,7 @@
     (try
         (with-newrelic-transaction category transaction-name custom-parameters callback)
       (catch Exception e
-        (ingore-transaction)
+        (ignore-transaction)
         (throw e)))))
 
 (defn notice-error [error]
