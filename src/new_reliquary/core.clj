@@ -26,19 +26,15 @@
 
 (defn with-newrelic-transaction
   ([category transaction-name custom-parameters callback]
-    (.callWithTrace tracer category transaction-name custom-parameters callback))
+    (try
+      (.callWithTrace tracer category transaction-name custom-parameters callback)
+      (catch Throwable e
+        (ignore-transaction)
+        (throw e))))
+
   ([category transaction-name callback]
     (with-newrelic-transaction category transaction-name {} callback)))
 
-(defn with-successfully-newrelic-transaction
-  ([category transaction-name callback]
-    (with-successfully-newrelic-transaction category transaction-name {} callback))
-  ([category transaction-name custom-parameters callback]
-    (try
-        (with-newrelic-transaction category transaction-name custom-parameters callback)
-      (catch Throwable e
-        (ignore-transaction)
-        (throw e)))))
 
 (defn notice-error [error]
   (NewRelic/noticeError error))

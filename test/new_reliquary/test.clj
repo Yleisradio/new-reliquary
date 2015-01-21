@@ -70,15 +70,7 @@
     (is (= @set-transaction-name-calls [[category "my transaction"]]))
     (is (= @add-custom-parameter-calls [["huge-clojure-fan" "true"]]))))
 
-(deftest with-successfully-newrelic-transaction-when-exception-occurs
+(deftest ignores-transaction-when-exception-occurs
   (testing "ignores transaction when exception occurs"
-    (is (thrown? Exception (core/with-successfully-newrelic-transaction category "my transaction" {:huge-clojure-fan true} #((throw (Exception. "Say Ni!"))))))
+    (is (thrown? Exception (core/with-newrelic-transaction category "my transaction" {:huge-clojure-fan true} #((throw (Exception. "Say Ni!"))))))
     (is (=@ignore-transaction-calls 1))))
-
-(deftest with-successfully-newrelic-transaction-without-excetion-occured
-  (testing "reports transaction when no exception occurred"
-    (core/with-successfully-newrelic-transaction category "my transaction" {:huge-clojure-fan true} #())
-    (is (= @set-transaction-name-calls [[category "my transaction"]]))
-    (is (= @add-custom-parameter-calls [["huge-clojure-fan" "true"]]))
-    (is (=@ignore-transaction-calls 0))))
-
