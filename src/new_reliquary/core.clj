@@ -36,7 +36,7 @@
   ([category transaction-name custom-parameters callback]
     (try
         (with-newrelic-transaction category transaction-name custom-parameters callback)
-      (catch Exception e
+      (catch Throwable e
         (ignore-transaction)
         (throw e)))))
 
