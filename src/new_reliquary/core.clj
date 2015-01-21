@@ -10,6 +10,9 @@
 (defn add-custom-parameter [key val]
   (NewRelic/addCustomParameter key val))
 
+(defn ignore-transaction []
+  (NewRelic/ignoreTransaction))
+
 (deftype NewRelicTracer []
   NewRelicTraceable (^{Trace {:dispatcher true}}
                       callWithTrace [this category transaction-name query-params callback]
@@ -23,9 +26,15 @@
 
 (defn with-newrelic-transaction
   ([category transaction-name custom-parameters callback]
-    (.callWithTrace tracer category transaction-name custom-parameters callback))
+    (try
+      (.callWithTrace tracer category transaction-name custom-parameters callback)
+      (catch Throwable e
+        (ignore-transaction)
+        (throw e))))
+
   ([category transaction-name callback]
     (with-newrelic-transaction category transaction-name {} callback)))
+
 
 (defn notice-error [error]
   (NewRelic/noticeError error))

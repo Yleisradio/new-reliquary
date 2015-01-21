@@ -13,15 +13,18 @@
 
 (def set-transaction-name-calls (atom []))
 (def add-custom-parameter-calls (atom []))
+(def ignore-transaction-calls   (atom 0))
 
 (defn final-handler [request] {:body request})
 (def app (wrap-params (wrap-newrelic-transaction final-handler category)))
 
 (use-fixtures :each (fn [test]
                       (with-redefs [new-reliquary.core/set-transaction-name (fn [category name] (swap! set-transaction-name-calls conj [category name]))
-                                    new-reliquary.core/add-custom-parameter (fn [key val] (swap! add-custom-parameter-calls conj [key val]))]
+                                    new-reliquary.core/add-custom-parameter (fn [key val] (swap! add-custom-parameter-calls conj [key val]))
+                                    new-reliquary.core/ignore-transaction   (fn [] (swap! ignore-transaction-calls inc))]
                         (reset! set-transaction-name-calls [])
                         (reset! add-custom-parameter-calls [])
+                        (reset! ignore-transaction-calls   0)
                         (test))))
 
 (deftest with-request-params
@@ -66,3 +69,8 @@
     (core/with-newrelic-transaction category "my transaction" {:huge-clojure-fan true} #())
     (is (= @set-transaction-name-calls [[category "my transaction"]]))
     (is (= @add-custom-parameter-calls [["huge-clojure-fan" "true"]]))))
+
+(deftest ignores-transaction-when-exception-occurs
+  (testing "ignores transaction when exception occurs"
+    (is (thrown? Exception (core/with-newrelic-transaction category "my transaction" {:huge-clojure-fan true} #((throw (Exception. "Say Ni!"))))))
+    (is (=@ignore-transaction-calls 1))))
