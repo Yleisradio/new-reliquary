@@ -11,7 +11,7 @@ Clojure wrapper for New Relic
 
 Add this to your Leiningen project.clj :dependencies:
 
-    [yleisradio/new-reliquary "0.1.4"]
+    [yleisradio/new-reliquary "0.1.5"]
 
 Jar is available in Clojars.
 
