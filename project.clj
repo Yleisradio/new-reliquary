@@ -8,4 +8,5 @@
   :profiles { :dev { :dependencies [[ring/ring-core "1.3.2"]
                                     [ring-mock "0.1.5"]
                                     [org.clojure/tools.trace "0.7.8"]]}}
-  :plugins [[lein-ancient "0.5.5"]])
+  :plugins [[lein-ancient "0.5.5"]]
+  :signing {:gpg-key "C37817AC"})
