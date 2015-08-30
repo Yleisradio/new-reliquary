@@ -68,7 +68,7 @@ This can be achieved easily by using ring.middleware.params/wrap-params.
 
 #### Api
 
-    (new-reliquary.ring/wrap-newrelic-transaction transaction-category next-ring-request-handler)
+    (new-reliquary.ring/wrap-newrelic-transaction next-ring-request-handler transaction-category)
 
 #### Example
 
@@ -78,7 +78,7 @@ This can be achieved easily by using ring.middleware.params/wrap-params.
 
     (defn final-handler [request] {:body "Hello world"})
     (def app (wrap-params
-                (wrap-newrelic-transaction "my transaction category" final-handler)))
+                (wrap-newrelic-transaction final-handler "my transaction category")))
 
 
 ## License
