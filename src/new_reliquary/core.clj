@@ -1,40 +1,40 @@
 (ns new-reliquary.core
-  (:require [clojure.string :refer [split]])
   (:import [com.newrelic.api.agent NewRelic Trace]))
 
-(definterface NewRelicTraceable (callWithTrace [category name params callback]))
+(definterface ITracer
+  (trace []))
+
+(deftype NewRelicTracer [callback] ITracer
+  (^{Trace {:dispatcher true}} trace [_]
+    (callback)))
 
 (defn set-transaction-name [category name]
   (NewRelic/setTransactionName category name))
 
-(defn add-custom-parameter [key val]
+(defn set-request-response [req res]
+  (NewRelic/setRequestAndResponse req res))
+
+(defn add-custom-param [key val]
   (NewRelic/addCustomParameter key val))
 
 (defn ignore-transaction []
   (NewRelic/ignoreTransaction))
 
-(deftype NewRelicTracer []
-  NewRelicTraceable (^{Trace {:dispatcher true}}
-                      callWithTrace [this category transaction-name query-params callback]
-                      (set-transaction-name category transaction-name)
-                      (doseq [[key val] (sort-by key query-params)]
-                        (when (> (count (name key)) 0)
-                          (add-custom-parameter (name key) (str val))))
-                      (callback)))
-
-(def tracer (NewRelicTracer.))
-
-(defn with-newrelic-transaction
-  ([category transaction-name custom-parameters callback]
-    (try
-      (.callWithTrace tracer category transaction-name custom-parameters callback)
-      (catch Throwable e
-        (ignore-transaction)
-        (throw e))))
-
-  ([category transaction-name callback]
-    (with-newrelic-transaction category transaction-name {} callback)))
-
-
 (defn notice-error [error]
   (NewRelic/noticeError error))
+
+(defn- named-transaction [category name custom-params callback]
+  (fn []
+    (set-transaction-name category name)
+    (doseq [[key value] (seq custom-params)]
+      (add-custom-param (str key) (str value)))
+    (callback)))
+
+(defn with-newrelic-transaction
+  ([category transaction-name custom-params callback]
+   (.trace (NewRelicTracer. (named-transaction category transaction-name custom-params callback))))
+  ([category transaction-name callback]
+    (with-newrelic-transaction category transaction-name {} callback))
+  ([callback]
+    (.trace (NewRelicTracer. callback))))
+
