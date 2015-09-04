@@ -42,9 +42,9 @@
 
 (defn with-newrelic-transaction
   ([category transaction-name custom-params callback]
-   (.trace (NewRelicTracer. (named-transaction category transaction-name custom-params callback))))
+   (.doTransaction (NewRelicTracer. (named-transaction category transaction-name custom-params callback))))
   ([category transaction-name callback]
     (with-newrelic-transaction category transaction-name {} callback))
   ([callback]
-    (.trace (NewRelicTracer. callback))))
+    (.doTransaction (NewRelicTracer. callback))))
 
