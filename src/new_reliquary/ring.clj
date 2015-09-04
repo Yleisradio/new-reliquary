@@ -81,7 +81,7 @@
 
 (defn- add-query-params [params]
   (doseq [[key value] (sort-by key (seq params))]
-    (newrelic/add-custom-param key value)))
+    (newrelic/add-custom-parameter key value)))
 
 (defn- web-transaction [request-hander request]
   (fn []

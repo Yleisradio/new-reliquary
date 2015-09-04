@@ -34,7 +34,7 @@
 (use-fixtures :each (fn [test]
                       (with-redefs [new-reliquary.core/set-request-response (fn [req res] (swap! set-request-response-calls conj [req res]))
                                     new-reliquary.core/set-transaction-name (fn [category name] (swap! set-transaction-name-calls conj [category name]))
-                                    new-reliquary.core/add-custom-param     (fn [key val] (swap! add-custom-parameter-calls conj [key val]))
+                                    new-reliquary.core/add-custom-parameter (fn [key val] (swap! add-custom-parameter-calls conj [key val]))
                                     new-reliquary.core/ignore-transaction   (fn [] (swap! ignore-transaction-calls inc))]
                         (reset! set-request-response-calls [])
                         (reset! set-transaction-name-calls [])

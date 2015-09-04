@@ -48,7 +48,7 @@ See http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewR
 
 See http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#ignoreTransaction()
 
-#### `add-custom-param [name value]`
+#### `add-custom-parameter [name value]`
 
 Adds new custom parameter to the transaction. Must be called inside the
 transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#addCustomParameter(java.lang.String,%20java.lang.String)

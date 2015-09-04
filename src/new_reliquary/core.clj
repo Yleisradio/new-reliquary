@@ -14,7 +14,7 @@
 (defn set-request-response [req res]
   (NewRelic/setRequestAndResponse req res))
 
-(defn add-custom-param [key val]
+(defn add-custom-parameter [key val]
   (NewRelic/addCustomParameter key val))
 
 (defn ignore-transaction []
@@ -27,7 +27,7 @@
   (fn []
     (set-transaction-name category name)
     (doseq [[key value] (seq custom-params)]
-      (add-custom-param (str key) (str value)))
+      (add-custom-parameter (str key) (str value)))
     (callback)))
 
 (defn with-newrelic-transaction
