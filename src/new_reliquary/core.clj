@@ -1,10 +1,10 @@
 (ns new-reliquary.core
   (:import [com.newrelic.api.agent NewRelic Trace]))
 
-(definterface ITracer
+(definterface INewRelicTracable
   (trace []))
 
-(deftype NewRelicTracer [callback] ITracer
+(deftype NewRelicTracer [callback] INewRelicTracable
   (^{Trace {:dispatcher true}} trace [_]
     (callback)))
 
