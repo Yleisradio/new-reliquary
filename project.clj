@@ -1,4 +1,4 @@
-(defproject yleisradio/new-reliquary "0.1.5"
+(defproject yleisradio/new-reliquary "1.0.0"
   :description "Clojure newrelic java api wrapper"
   :url "https://github.com/Yleisradio/new-reliquary"
   :license {:name "Eclipse Public License"
