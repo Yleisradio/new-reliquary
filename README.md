@@ -7,78 +7,95 @@ Clojure wrapper for New Relic
 [![Dependencies Status](http://jarkeeper.com/Yleisradio/new-reliquary/status.png)](http://jarkeeper.com/Yleisradio/new-reliquary)
 
 ------------------------------------
-### Installation
+## Installation
 
-Add this to your Leiningen project.clj :dependencies:
+Add this to your Leiningen project.clj `:dependencies`:
 
     [yleisradio/new-reliquary "0.1.5"]
 
 Jar is available in Clojars.
 
 --------------------------------------
-### New Relic Transactions
+## New Relic Transactions
 
-#### Api
+Basic NewRelic transaction tracing utilities located in `new-reliquary.core`
 
-    (new-reliquary.core/with-newrelic-transaction
-        transaction-category  ;You'll be able to select category from New Relic UI
-                              ;[Applications -> Monitoring -> Transactions -> Type dropdown].
-        transaction-name
-        optional-custom-parameters ;helpful when you need to investigate errors or slow performance
-        function-to-evaluate-in-transaction)
+### API
 
-##### Example
+#### `with-newrelic-transaction`
 
-    (defn update-facebook-likes [] ...)
+```clojure 
+(defn with-newrelic-transaction
+  ([category transaction-name custom-params callback] ...)
+  ([category transaction-name callback]               ...)
+  ([callback]                                         ...))
+```
 
-    (with-newrelic-transaction
-        "My custom category"
-        "Facebook data updating"
-        {:user "jk" :huge-clojure-fan true}
-        update-facebook-likes)
+Creates a transaction with optional transaction name and custom params.
+If transaction name is not passed, then `set-transaction-name` should 
+be used inside the transaction.
 
---------------------------------------------
-### Error handling
+#### `set-transaction-name [category name]`
 
-#### Api
+Sets name to the transaction. Must be used if transaction is created
+with `with-newrelic-transaction callback`. See http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#setTransactionName(java.lang.String,%20java.lang.String)
 
-    (new-reliquary.core/notice-error error)
+#### `notice-error [error]`
 
-    * error can be String or Throwable
+See http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#noticeError(java.lang.String)
 
-#### Example
+#### `ignore-transaction`
 
-    (new-reliquary.core/notice-error "Couldn't connect to Faceboook.")
+See http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#ignoreTransaction()
 
-or
+#### `add-custom-parameter [name value]`
 
-     (try
-       (some-fn)
-       (catch Throwable e
-           (new-reliquary.core/notice-error e)))
+Adds new custom parameter to the transaction. Must be called inside the
+transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/api/agent/NewRelic.html#addCustomParameter(java.lang.String,%20java.lang.String)
 
---------------------------------------------
 
-### Ring middleware
+### Examples
 
-Middleware to start newrelic transaction.
+```clojure 
+(:require [new-reliquary.core :as [newrelic]])
 
-If you want to add query parameters as new relic custom params, make sure that request contains hash map :query-params (not in the default ring setup).
-This can be achieved easily by using ring.middleware.params/wrap-params.
+(defn update-facebook-likes [] ...)
 
-#### Api
+(newrelic/with-newrelic-transaction
+    "My custom category"
+    "Facebook data updating"
+    {:user "jk" :huge-clojure-fan true}
+    update-facebook-likes)
+    
+(newrelic/with-newrelic-transaction 
+  (fn [] (newrelic/set-transaction-name "backend" "poller") ...)
+```
 
-    (new-reliquary.ring/wrap-newrelic-transaction next-ring-request-handler transaction-category)
 
-#### Example
+## Ring middleware
 
-    (ns new-reliquary-example.main
-      (:require [new-reliquary.ring :refer [wrap-newrelic-transaction]]
-                [ring.middleware.params :refer [wrap-params]]))
+Middleware to start NewRelic web transaction. Located in `new-reliquary.ring`
 
-    (defn final-handler [request] {:body "Hello world"})
-    (def app (wrap-params
-                (wrap-newrelic-transaction final-handler "my transaction category")))
+If you want to add query parameters as new relic custom params, make sure that 
+request contains hash map `:query-params` (not in the default ring setup).
+This can be achieved easily by using `ring.middleware.params/wrap-params`.
+
+### API
+
+#### `wrap-newrelic-transaction [next-ring-request-handler]`
+
+### Examples
+
+```clojure
+(ns new-reliquary-example.main
+  (:require [new-reliquary.ring :refer [wrap-newrelic-transaction]]
+            [ring.middleware.params :refer [wrap-params]]))
+
+(defn request-handler [request] {:body "Hello world"})
+(def app (-> request-handler
+            (wrap-newrelic-transaction)
+            (wrap-params)))
+```
 
 
 ## License
