@@ -1,9 +1,9 @@
 (ns new-reliquary.core
   (:import [com.newrelic.api.agent NewRelic Trace]))
 
-(definterface INewRelicTracable
-  (trace [])
-  (doTransaction []))
+(definterface NewRelicTracable
+  (trace [callback])
+  (doTransaction [callback]))
 
 (defn set-transaction-name [category name]
   (NewRelic/setTransactionName category name))
@@ -20,19 +20,19 @@
 (defn notice-error [error]
   (NewRelic/noticeError error))
 
-(defn- named-transaction [category name custom-params callback]
+(defn- wrap-with-named-transaction [category name custom-params callback]
   (fn []
     (set-transaction-name category name)
     (doseq [[key value] (seq custom-params)]
       (add-custom-parameter (str key) (str value)))
     (callback)))
 
-(deftype NewRelicTracer [callback] INewRelicTracable
-  (^{Trace {:dispatcher true}} trace [_]
+(deftype NewRelicTracer [] NewRelicTracable
+  (^{Trace {:dispatcher true}} trace [_ callback]
     (callback))
-  (doTransaction [this]
+  (doTransaction [this callback]
     (try
-      (.trace this)
+      (.trace this callback)
       (catch Throwable e
         ; .trace() method already reports the error due to @Trace annotation => we don't want that
         ; NewRelic reports the error twice, thus ignore the outer ("global") transaction
@@ -42,9 +42,9 @@
 
 (defn with-newrelic-transaction
   ([category transaction-name custom-params callback]
-   (.doTransaction (NewRelicTracer. (named-transaction category transaction-name custom-params callback))))
+   (.doTransaction (NewRelicTracer.) (wrap-with-named-transaction category transaction-name custom-params callback)))
   ([category transaction-name callback]
     (with-newrelic-transaction category transaction-name {} callback))
   ([callback]
-    (.doTransaction (NewRelicTracer. callback))))
+    (.doTransaction (NewRelicTracer.) callback)))
 
