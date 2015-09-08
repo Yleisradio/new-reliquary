@@ -1,4 +1,4 @@
-(ns new-reliquary.test.ring
+(ns new-reliquary.ring-test
   (:require [clojure.test :refer :all]
             [new-reliquary.ring :as ring]
             [ring.mock.request :refer [request]]

@@ -1,4 +1,4 @@
-(ns new-reliquary.test.core
+(ns new-reliquary.core-test
   (:require [clojure.test :refer :all]
             [new-reliquary.core :as core]
             [ring.mock.request :refer [request]]
@@ -36,5 +36,3 @@
     (core/with-newrelic-transaction empty-handler)
     (is (= @add-custom-parameter-calls []))
     (is (= @set-transaction-name-calls []))))
-
-
