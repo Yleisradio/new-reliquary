@@ -49,16 +49,19 @@
   (:uri req))
 
 (defn- resolve-query-params [req]
-  (->> (seq (get req :query-params {}))
-       (filter #(not (empty? (str (first %)))))
-       (reduce (fn [memo [k v]] (assoc memo (str k) (str v))) {})))
+  (->> (:query-params req)
+       (map (fn [[key val]] [(str key) (str val)]))
+       (remove (comp empty? first))
+       (into {})))
 
 (defn- resolve-headers [req]
-  (reduce (fn [memo [k v]] (assoc memo (str k) (str v))) {} (seq (:headers req))))
+  (->> (:headers req)
+       (map (fn [[key val]] [(str key) (str val)]))
+       (into {})))
 
 (defn- resolve-content-type [res]
-  (->> (seq (:headers res))
-       (filter #(= "content-type" (.toLowerCase (str (first %)))))
+  (->> (:headers res)
+       (filter (fn [[key _]] (= "content-type" (.toLowerCase (str key)))))
        (first)
        (second)))
 
