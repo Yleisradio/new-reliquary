@@ -95,3 +95,15 @@
                                 (assoc :compojure/route [:any "/dogs/:id"]))]
       (app compojure-request)
       (is (= (get-newrelic-request-urls) ["/dogs/:id"])))))
+
+(deftest with-method-in-transaction-name
+  (let [app (-> (fn [_] {:body "OK"
+                         :headers {"Content-Type" "text/html"}
+                         :status 200})
+                (ring/wrap-newrelic-transaction :add-method-to-transaction-name true)
+                (wrap-params))]
+    (testing "adds the HTTP method to request URI"
+      (app (request :get "http://test.fi/dogs"))
+      (is (= (get-newrelic-request-urls) ["/GET /dogs"]))
+      (is (= (get-newrelic-response-statuses) [200]))
+      (is (= (get-newrelic-response-content-types) ["text/html"])))))
