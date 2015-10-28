@@ -46,7 +46,8 @@
    505 "HTTP Version Not Supported"})
 
 (defn- resolve-uri [req]
-  (:uri req))
+  (or (get-in req [:compojure/route 1])
+      (:uri req)))
 
 (defn- resolve-query-params [req]
   (->> (:query-params req)

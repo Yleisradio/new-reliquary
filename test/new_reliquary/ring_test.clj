@@ -88,3 +88,10 @@
       (app (request :get "http://test.fi/dogs"))
       (is (= (get-newrelic-response-content-types) ["text/xml"]))
       (is (= (get-newrelic-response-statuses) [404])))))
+
+(deftest with-compojure-route-information
+  (testing "picks the parametrized compojure url from route info if available"
+    (let [compojure-request (-> (request :get "http://test.fi/dogs/kultainen-noutaja")
+                                (assoc :compojure/route [:any "/dogs/:id"]))]
+      (app compojure-request)
+      (is (= (get-newrelic-request-urls) ["/dogs/:id"])))))
