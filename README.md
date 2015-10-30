@@ -76,9 +76,17 @@ transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/
 
 Middleware to start NewRelic web transaction. Located in `new-reliquary.ring`
 
+If you're using [Compojure](https://github.com/weavejester/compojure) 1.4.0 or later, 
+New Reliquary will use Compojure route URLs with placeholder parameters (i.e. 
+`/users:id` instead of `/users/5`) as New Relic transaction names.
+
 If you want to add query parameters as new relic custom params, make sure that 
 request contains hash map `:query-params` (not in the default ring setup).
 This can be achieved easily by using `ring.middleware.params/wrap-params`.
+
+New Reliquary can also automatically add the HTTP method to the transaction names.
+Use the optional `:add-method-to-transaction-name true` parameter when constructing
+the middleware to enable the feature.
 
 ### API
 
@@ -93,7 +101,7 @@ This can be achieved easily by using `ring.middleware.params/wrap-params`.
 
 (defn request-handler [request] {:body "Hello world"})
 (def app (-> request-handler
-            (wrap-newrelic-transaction)
+            (wrap-newrelic-transaction :add-method-to-transaction-name true)
             (wrap-params)))
 ```
 
