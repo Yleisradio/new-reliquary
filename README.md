@@ -57,7 +57,7 @@ transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/
 ### Examples
 
 ```clojure 
-(:require [new-reliquary.core :as [newrelic]])
+(:require [new-reliquary.core :as newrelic])
 
 (defn update-facebook-likes [] ...)
 
