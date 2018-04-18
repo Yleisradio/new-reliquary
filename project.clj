@@ -9,4 +9,4 @@
                                     [ring-mock "0.1.5"]
                                     [org.clojure/tools.trace "0.7.9"]]}}
   :plugins [[lein-ancient "0.6.14"]]
-  :signing {:gpg-key "C37817AC"})
+  :signing {:gpg-key "D9A17928"})
