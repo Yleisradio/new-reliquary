@@ -25,7 +25,7 @@ Basic NewRelic transaction tracing utilities located in `new-reliquary.core`
 
 #### `with-newrelic-transaction`
 
-```clojure 
+```clojure
 (defn with-newrelic-transaction
   ([category transaction-name custom-params callback] ...)
   ([category transaction-name callback]               ...)
@@ -33,7 +33,7 @@ Basic NewRelic transaction tracing utilities located in `new-reliquary.core`
 ```
 
 Creates a transaction with optional transaction name and custom params.
-If transaction name is not passed, then `set-transaction-name` should 
+If transaction name is not passed, then `set-transaction-name` should
 be used inside the transaction.
 
 #### `set-transaction-name [category name]`
@@ -57,7 +57,7 @@ transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/
 
 ### Examples
 
-```clojure 
+```clojure
 (:require [new-reliquary.core :as newrelic])
 
 (defn update-facebook-likes [] ...)
@@ -67,8 +67,8 @@ transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/
     "Facebook data updating"
     {:user "jk" :huge-clojure-fan true}
     update-facebook-likes)
-    
-(newrelic/with-newrelic-transaction 
+
+(newrelic/with-newrelic-transaction
   (fn [] (newrelic/set-transaction-name "backend" "poller") ...)
 ```
 
@@ -77,7 +77,7 @@ transaction. See: http://newrelic.github.io/java-agent-api/javadoc/com/newrelic/
 
 Middleware to start NewRelic web transaction. Located in `new-reliquary.ring`
 
-If you want to add query parameters as new relic custom params, make sure that 
+If you want to add query parameters as new relic custom params, make sure that
 request contains hash map `:query-params` (not in the default ring setup).
 This can be achieved easily by using `ring.middleware.params/wrap-params`.
 
