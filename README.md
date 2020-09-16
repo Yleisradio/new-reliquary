@@ -1,6 +1,6 @@
 # New-reliquary
 
-* This project is not maintained anymore *
+__This project is not maintained anymore__
  
 Clojure wrapper for New Relic
 
