@@ -1,5 +1,7 @@
 # New-reliquary
 
+* This project is not maintained anymore *
+ 
 Clojure wrapper for New Relic
 
 
